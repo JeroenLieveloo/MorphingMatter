@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Morphing Matter</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
+</head>
+<body>
+  <span>
+    <h1 id="title">Morphing Matter</h1>
+  </span>
+  <div id="main">
+    <div id="centerDiv">
+      <svg id="svgContainer" viewBox="0 0 200 200"></svg>
+    </div>
+
+    <div id="settings-menu">
+      <div>
+        <div id="cursorPosition">Connecting...</div>
+        <br><br>
+        <label for="mode">Choose a mode:</label>
+        <select name="mode" id="mode" onchange="setMode(this.value)">
+          <option value="release">Release</option>
+          <option value="static">Static</option>
+          <option value="pull">Pull</option>
+          <option value="push">Push</option>
+          <option value="ripple">Ripple</option>
+        </select>
+        <br><br>
+        <label for="scale">Actuator scale:</label>
+        <input id="scale" type="range" min="0.1" max="2" value="0.3" class="slider" step=0.1 id="scale" onchange="setScale(this.value)">
+        <br><br>
+        <label for="speed">Animation speed:</label>
+        <input id="speed" type="range" min="0.1" max="3" value="1" class="slider" step=0.1 id="speed" onchange="setSpeed(this.value)">
+        <br><br>
+        <label for="strength">Animation strength:</label>
+        <input id="strength" type="range" min="0.5" max="2" value="1" class="slider" step=0.1 id="strength" onchange="setStrength(this.value)">
+        <br><br>
+        <label for="size">Animation size:</label>
+        <input id="size" type="range" min="0.1" max="5" value="3" class="slider" step=0.1 id="size" onchange="setSize(this.value)">
+        <br><br>
+        <label for="isHold">Hold animation:</label>
+        <input id="isHold" type="checkbox" onchange="setHold(this.checked)">
+        <br><br>
+        <label for="maxSpeed">Max actuator speed:</label>
+        <input id="maxSpeed" value="0.2" id="maxSpeed" onchange="setMaxSpeed(this.value)">
+      </div>
+      <button popovertarget="settings-menu" popovertargetaction="hide">Close</button>
+    </div>
+
+  </div>
+  <button id="settings-button" onclick="disableMenu()">Settings</button>
+
+  <script src="/js/script.js"></script>
+</body>
+</html>

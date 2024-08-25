@@ -1,0 +1,57 @@
+body, html {
+  text-align: center;
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+#title{
+  align-items: center;
+  font-size: 4rem;
+  background: linear-gradient(to right, rgb(189, 189, 233), rgb(218, 152, 152));
+  background-clip: text;
+  color:transparent;
+}
+
+#main{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 5vw;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+#main>*{
+  background-color: #fff;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border-radius: 5vw;
+}
+
+#centerDiv {
+}
+
+#svgContainer {
+  width: 100%;
+  height: 100%;
+  fill: #3498db;
+}
+
+#cursorPosition {
+  padding: 5px;
+}
+
+#settings-button{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+#settings-menu{
+  overflow: scroll;
+  padding: 5%;
+}
