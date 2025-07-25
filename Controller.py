@@ -123,8 +123,7 @@ class Controller:
     def touch(self, actuator:Actuator, center:Position, strength, size):
         #increases or decreases the area around the touch center
         dist = calc_dist(center, actuator.pos)
-        if(dist > size): return
-        actuator.set((self.volume + strength * (1 - dist/size)))
+        actuator.set(strength * size / dist)
 
     def calc_sin(self, dist, frequency, speed):
         val = time.time() * speed + dist*frequency
@@ -169,7 +168,7 @@ class Controller:
         for actuator in self.actuators:
             actuator.change(requiredChangePerActuator)
             totalAfterVolume += actuator.actuation
-        logging.info(f"Current colume: {totalAfterVolume:.2f}, desired volume: {totalDesiredVolume:.2f}")
+        #logging.info(f"Current colume: {totalAfterVolume:.2f}, desired volume: {totalDesiredVolume:.2f}")
 
     def send_to_client(self):
         data = []
