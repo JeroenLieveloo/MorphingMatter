@@ -33,6 +33,7 @@ body, html {
 }
 
 #centerDiv {
+  margin: 5%;
 }
 
 #svgContainer {
@@ -55,3 +56,49 @@ body, html {
   overflow: scroll;
   padding: 5%;
 }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  border-radius: 5px;
+  
+  &::-moz-range-progress { 
+    border-radius: 5px;
+    height: 10px;
+    background: #6498db; 
+    /* 
+    background: linear-gradient(90deg, #ddf, #fdd);
+    */
+  }
+  
+  &::-moz-range-thumb {
+    opacity: 0.0;
+    size: 15px;
+    cursor: pointer;
+    border-radius: 100%;
+  } 
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    opacity: 0.0;
+    size: 15px;
+    cursor: pointer;
+    border-radius: 100%;
+  }
+  
+  &:hover{
+    &::-moz-range-thumb{
+      opacity: 1.0;
+    }
+    &::-webkit-slider-thumb {
+      opacity: 1.0;
+    }
+  }
+}
+
