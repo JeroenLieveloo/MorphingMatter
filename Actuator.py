@@ -25,7 +25,7 @@ class Actuator:
     
     def get_max_change(self):
         #return iteration_duration * self.max_speed
-        return 0.02
+        return 0.05
 
     def set(self, new:float):
         diff = new - self.actuation
@@ -36,10 +36,10 @@ class Actuator:
         if (abs(change) < self.deadzone): return
         max_chance = self.get_max_change()
         true_change = clamp(-max_chance, max_chance, change)
-        self.actuation = clamp(0., 1., self.actuation + true_change)
+        self.actuation = self.actuation + true_change
 
     def to_dictionary(self):
-        return {"actuation": self.actuation,
+        return {"actuation": clamp(0, 1, self.actuation),
                 'x': self.pos.x, 
                 'y': self.pos.y, 
                 'pin': self.pin}
