@@ -26,7 +26,7 @@ const server = app.listen(port, host, () => {
 const wss = new WebSocket.Server({ server });
 
 // Spawn a persistent Python process
-const pythonProcess = spawn('python', ['process.py']);
+const pythonProcess = spawn('python', ['Controller.py']);
 console.log('spawned a python')
 
 pythonProcess.stderr.on('data', (data) => {
@@ -56,10 +56,8 @@ pythonProcess.stdout.on('data', (data) => {
   } catch(err){
     console.error("Error while sending data to client: ", err.message, ". Received: ", pythonOutputBuffer);
   }
-
     // Clear the buffer
     pythonOutputBuffer = '';
-  
 });
 
 wss.on('connection', function connection(ws) {

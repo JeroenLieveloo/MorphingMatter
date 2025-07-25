@@ -26,14 +26,14 @@
           <option value="ripple">Ripple</option>
         </select>
         <br><br>
-        <label for="scale">Actuator scale:</label>
-        <input id="scale" type="range" min="0.1" max="2" value="0.3" class="slider" step=0.1 id="scale" onchange="setScale(this.value)">
+        <label for="volume">Volume:</label>
+        <input id="volume" type="range" min="0.0" max="1" value="0.5" class="slider" step=0.1 id="volume" onchange="setVolume(this.value)">
         <br><br>
         <label for="speed">Animation speed:</label>
         <input id="speed" type="range" min="0.1" max="3" value="1" class="slider" step=0.1 id="speed" onchange="setSpeed(this.value)">
         <br><br>
         <label for="strength">Animation strength:</label>
-        <input id="strength" type="range" min="0.5" max="2" value="1" class="slider" step=0.1 id="strength" onchange="setStrength(this.value)">
+        <input id="strength" type="range" min="0.1" max="2" value="1" class="slider" step=0.1 id="strength" onchange="setStrength(this.value)">
         <br><br>
         <label for="size">Animation size:</label>
         <input id="size" type="range" min="0.1" max="5" value="3" class="slider" step=0.1 id="size" onchange="setSize(this.value)">
@@ -43,6 +43,12 @@
         <br><br>
         <label for="maxSpeed">Max actuator speed:</label>
         <input id="maxSpeed" value="0.2" id="maxSpeed" onchange="setMaxSpeed(this.value)">
+        <br><br>
+        <label for="equalisation">Equalisation:</label>
+        <input id="equalisation" type="range" min="0.0" max="1" value="0.5" class="slider" step=0.1 id="equalisation" onchange="setEqualisation(this.value)">
+        <br><br>
+        <label for="scale">Actuator scale:</label>
+        <input id="scale" type="range" min="0.1" max="2" value="0.3" class="slider" step=0.1 id="scale" onchange="setScale(this.value)">
       </div>
       <button popovertarget="settings-menu" popovertargetaction="hide">Close</button>
     </div>

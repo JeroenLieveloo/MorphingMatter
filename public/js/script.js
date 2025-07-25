@@ -35,6 +35,16 @@ function setScale(input){
   drawActuators()
 }
 
+function setVolume(volume){
+  console.log('Setting volume to:', volume);
+  socket.send(JSON.stringify({volume: volume}));
+}
+
+function setEqualisation(equalisation){
+  console.log('Setting equalisation to:', equalisation);
+  socket.send(JSON.stringify({equalisation: equalisation}));
+}
+
 function setMode(mode){
   console.log('Setting mode to:', mode);
   socket.send(JSON.stringify({mode: mode}));
@@ -64,6 +74,7 @@ function setMaxSpeed(maxSpeed){
   console.log('Setting maxSpeed to:', maxSpeed);
   socket.send(JSON.stringify({max_speed: maxSpeed}));
 }
+
 
 function timeElapsed(deltaTime){
   const currTime = new Date().getTime();
@@ -115,7 +126,7 @@ function toggleMenu(){
 socket.onopen = function() {
   console.log('Connected to the WebSocket server');
   cursorPositionDiv.textContent = `Connected!`;
-  
+
   document.addEventListener('mousemove', function(event) {
     setCursor(event.clientX, event.clientY);
   });
@@ -139,6 +150,18 @@ socket.onopen = function() {
     }
   });
 
+  // Add mouse event listeners for svgContainer
+  svgContainer.addEventListener('mousedown', function(event) {
+    if (event.button === 0) { // Left mouse button
+      socket.send(JSON.stringify({pressed: true}));
+    }
+  });
+
+  svgContainer.addEventListener('mouseup', function(event) {
+    if (event.button === 0) { // Left mouse button
+      socket.send(JSON.stringify({pressed: false}));
+    }
+  });
 };
 
 socket.onmessage = function(event) {
