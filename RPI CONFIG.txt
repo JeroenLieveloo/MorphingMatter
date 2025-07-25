@@ -1,0 +1,41 @@
+RPI CONFIG
+
+ENABLING I2C:
+Open the file at: /boot/firmware/config.txt
+
+Add the line:
+dtparam=i2c1=on
+
+Reboot
+
+
+
+HOST THE HOTSPOT
+???
+
+REDIRECT ALL SITES TO THE WEB INTERFACE
+???
+
+
+
+ACCESS FOR DEVELOPMENT
+SSH allows access remotely.
+However, you must be connected to the same network as the Raspberry Pi.
+This can easily be done by connecting the Raspberry Pi to the router with an ethernet cable,
+Or connecting it to a display, keyboard and mouse, and connecting to a wifi network.
+
+To enable SSH via the terminal, 
+open a terminal window and enter:
+
+sudo raspi-config
+
+Now with the arrows select Interfacing Options, 
+navigate to and select SSH, 
+choose Yes, 
+and select Ok.
+
+
+Or
+
+sudo apt install openssh server
+sudo systemctl enable ssh
