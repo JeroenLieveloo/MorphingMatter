@@ -1,5 +1,5 @@
 const host = 'localhost'; //192.168.4.1';
-let scale = 0.3;
+let scale = 0.35;
 let canvasSize = 200;
 const delay = 100;
 
@@ -119,8 +119,7 @@ function setCursor(x, y){
 }
 
 function toggleMenu(){
-  const menu = document.getElementById("settings-menu");
-  menu.disabled = !menu.disabled;
+  document.getElementById('grid').classList.toggle('collapsed');
 }
 
 socket.onopen = function() {
