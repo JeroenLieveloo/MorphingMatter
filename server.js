@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 
-const host = 'localhost';// '192.168.4.1';
+const host = '0.0.0.0'; //localhost';// '192.168.4.1';
 
 // Create the WebSocket server
 //const server = app.listen(port, '192.168.4.1', () => {
