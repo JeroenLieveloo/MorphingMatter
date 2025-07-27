@@ -185,7 +185,7 @@ class Controller:
         for arduino in self.arduinos:
             data = []
             for actuator in arduino.actuators:
-                data.append((actuator.pin, actuator.actuation))
+                data.append((int(actuator.pin), int(actuator.actuation*255)))
             arduino.write(data)
             #logging.info(f"{arduino.UID} - {arduino.address} : {data}")
 
@@ -204,5 +204,6 @@ def main():
         except Exception as e:
             logging.info(f"Error: {e}")
 
+time.sleep(2)
 if __name__ == "__main__":
     main()

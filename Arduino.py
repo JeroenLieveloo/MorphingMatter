@@ -49,30 +49,20 @@ class Arduino:
         """
         #if not connected to i2c, skip sending the data and write it to the console instead
         if not self.isConnected: 
-            #print(data)
+            print(f"not connected... data: {data}")
             return
-        message = self.serialize_data(data)
-        # Convert message to bytes and send over I2C
+        # Flatten to [0, 10, 1, 50, 2, 200]
+        message = [byte for pair in data for byte in pair]
+
         try:
-            # Send each byte separately (I2C block write is limited)
-            for b in message:
-                self.bus.write_byte(self.address, b)
+            # Pad if needed to avoid exceeding 32 bytes total
+            if len(message) > 31:
+                raise ValueError("Too many servo commands for one I2C message.")
+            self.bus.write_i2c_block_data(self.address, 0x00, message)
+            #print("Sent commands:", commands)
         except Exception as e:
             print(f"Arduino {self.address} I2C write error: {e}", file=sys.stderr)
 
-    def serialize_data(self, data):
-        """
-        Converts the list of (pin, value) tuples into a byte array.
-        :param data: List of tuples (pin, value)
-        :return: Byte array
-        """
-        # Example: [pin, value, pin, value, ...]
-        byte_data = []
-        for pin, value in data:
-            byte_data.append(int(pin))
-            # Scale value to 0-255 if needed
-            byte_data.append(int(max(0, min(255, int(value * 255)))))
-        return byte_data
 
     def close(self):
         if hasattr(self, 'bus') and self.bus is not None:
