@@ -1,4 +1,4 @@
-const host = 'localhost'; //192.168.4.1';
+const host = '192.168.178.129'; //192.168.4.1';
 let scale = 0.35;
 let canvasSize = 200;
 const delay = 100;
@@ -11,6 +11,7 @@ let isSending = false;
 let actuators;
 let lastTime = 0;
 let isPaused = false;
+let showLabels = false;
 
 function getPressureColor(pressure){
   return 'rgba(' + pressure*200 + ', 152, 219, 0.5)'
@@ -27,8 +28,14 @@ function togglePause(){
 
 function setRelease(release){
   console.log('Setting release to:', release);
-  socket.send(JSON.stringify({release: release}));
+  socket.send(JSONshowLabels.stringify({release: release}));
 }
+
+function setShowLabels(show){
+  console.log('Setting showLabels to:', show);
+  showLabels = show;
+}
+
 
 function setScale(input){
   scale = input;
@@ -94,10 +101,58 @@ function drawActuators() {
     svgElement.setAttribute('cy', actuator.y * 100 * scale + canvasSize/2); // Adjust scaling and positioning as needed
     svgElement.setAttribute('r', getActuationSize(actuator.actuation) * scale); // Radius of the circle
     svgElement.setAttribute('fill', getPressureColor(actuator.actuation)); // Default color
+    svgElement.innerHTML = actuator.actuation; // set text
+
     svgElement.dataset.pin = actuator.pin;
+    svgElement.dataset.arduino = actuator.arduino;
     svgContainer.appendChild(svgElement);
   });
+  if(showLabels){
+    labelSvgCircles(svgContainer)
+  }
 }
+
+
+function labelSvgCircles(svgContainer) {
+  const circles = svgContainer.querySelectorAll('circle');
+
+  circles.forEach(circle => {
+    const cx = circle.getAttribute('cx');
+    const cy = circle.getAttribute('cy');
+    const pin = circle.getAttribute('data-pin');
+    const arduino = circle.getAttribute('data-arduino');
+
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', cx);
+    text.setAttribute('y', cy);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.setAttribute('font-size', '3');
+    text.setAttribute('fill', '#000'); 
+
+    // First line
+    const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    tspan1.setAttribute('x', cx);
+    tspan1.setAttribute('dy', '-0.5em');
+    tspan1.textContent = `pin: ${pin}`;
+
+    // Second line (10 units below)
+    const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    tspan2.setAttribute('x', cx);
+    tspan2.setAttribute('dy', '1em'); // Relative to previous line
+    tspan2.textContent = `arduino: ${arduino}`;
+
+    text.style.userSelect = 'none';
+    text.style.webkitUserSelect = 'none';
+    text.style.mozUserSelect = 'none';
+    text.style.msUserSelect = 'none';
+    
+    text.appendChild(tspan1);
+    text.appendChild(tspan2);
+    svgContainer.appendChild(text);
+  });
+}
+
 
 function setCursor(x, y){
   if (!isSending && timeElapsed(delay)) {

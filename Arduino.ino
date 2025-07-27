@@ -1,31 +1,33 @@
 #include <Wire.h>
 #include <Servo.h>
 
-#define NUM_ACTUATORS 4 // Change to your number of actuators
-const int actuatorPins[NUM_ACTUATORS] = {3, 5, 6, 9}; // Example pins
-
-Servo actuators[NUM_ACTUATORS];
-uint8_t actuatorValues[NUM_ACTUATORS]; // Values received from I2C (0-255)
+const int NUM_SERVOS = 6;           // You can increase as needed
+Servo servos[NUM_SERVOS];
+int servoPins[NUM_SERVOS] = {3, 5, 6, 9, 10, 11};  // Physical pin numbers
+byte address = 0x08;
 
 void setup() {
-  Wire.begin(0x08); // Set I2C address to match your Python code
+  Wire.begin(address);  // Start I²C as slave at address 0x08
   Wire.onReceive(receiveData);
-  for (int i = 0; i < NUM_ACTUATORS; i++) {
-    actuators[i].attach(actuatorPins[i]);
-    actuators[i].write(0); // Initialize to 0 degrees
+
+  for (int i = 0; i < NUM_SERVOS; i++) {
+    servos[i].attach(servoPins[i]);
+    servos[i].write(90);  // Set to neutral position
   }
 }
 
 void loop() {
-  // Nothing needed here, everything handled in receiveData
+  // Nothing to do here — all handled in receiveData()
 }
 
 void receiveData(int byteCount) {
-  int i = 0;
-  while (Wire.available() && i < NUM_ACTUATORS) {
-    actuatorValues[i] = Wire.read(); // Read value (0-255)
-    int angle = map(actuatorValues[i], 0, 255, 0, 90); // Map to 0..90 degrees
-    actuators[i].write(angle);
-    i++;
+  while (Wire.available() >= 2) {
+    byte servoIndex = Wire.read();     // First byte = which servo
+    byte actuation = Wire.read();      // Second byte = 0–255
+
+    if (servoIndex < NUM_SERVOS) {
+      int angle = map(actuation, 0, 255, 0, 180);  // Scale value
+      servos[servoIndex].write(angle);
+    }
   }
 }

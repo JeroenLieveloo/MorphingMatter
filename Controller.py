@@ -37,20 +37,14 @@ class Controller:
         self.size = 1.0
         self.max_speed = 1.0
         self.volume = 0.5
-        self.mode = "push"
+        self.mode = "pull"
         self.hold = False
         self.pressed = False
         self.equalisation = 0.1
 
         self.last_iteration = time.time()
         self.iteration_duration = 0.05
-
-    def set_arduinos(self):
-        i2c_addresses = [0x08]  # Example I2C address for Arduino
-        self.arduinos = []
-        for address in i2c_addresses:
-            arduino_actuators = [actuator for actuator in self.actuators if actuator.arduino == address]
-            self.arduinos.append(Arduino(arduino_actuators, address))
+        
 
     def calc_iteration_duration(self):
         delta_time = time.time() - self.last_iteration
@@ -59,11 +53,21 @@ class Controller:
 
     def load_config(self, filename):
         self.actuators = []
+        adruinoUIDs = []
         with open(filename, mode='r') as file:
             reader = csv.reader(file)
             for row in reader:
-                x, y, pin, arduino = float(row[0]), float(row[1]), int(row[2]), str(row[3])
-                self.actuators.append(Actuator(arduino, pin, Position(x, y)))
+                x, y, pin, arduinoUID = float(row[0]), float(row[1]), int(row[2]), int(row[3])
+                self.actuators.append(Actuator(arduinoUID, pin, Position(x, y)))
+                if arduinoUID not in adruinoUIDs:
+                    adruinoUIDs.append(arduinoUID)
+
+        for arduinoUID in adruinoUIDs:
+            arduino_actuators = [actuator for actuator in self.actuators if actuator.arduino == arduinoUID]
+            self.arduinos.append(Arduino(arduino_actuators, arduinoUID))
+                
+
+                
 
     def read_data(self):
         if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -139,7 +143,7 @@ class Controller:
                         self.static(actuator, abs(self.cursor.y))
 
                     case "push":
-                        self.touch(actuator, self.cursor, -self.strength, self.size)
+                        self.touch(actuator, self.cursor, self.strength*-1, self.size)
 
                     case "pull":
                         self.touch(actuator, self.cursor, self.strength, self.size)
@@ -147,8 +151,9 @@ class Controller:
                     case "ripple":
                         self.ripple(actuator, self.cursor, self.strength, self.speed)
             else:
-                #release
-                self.static(actuator, self.volume)
+                if not self.hold:
+                    #release
+                    self.static(actuator, self.volume)
 
     def equalize_actuators(self, desiredVolume:float):
         # adjusts all the actuators by a small amount to keep the volume consistent
@@ -182,11 +187,11 @@ class Controller:
             for actuator in arduino.actuators:
                 data.append((actuator.pin, actuator.actuation))
             arduino.write(data)
+            #logging.info(f"{arduino.UID} - {arduino.address} : {data}")
 
 def main():
     controller = Controller()
     controller.load_config('config.csv')
-    controller.set_arduinos()
     while True:
         try:
             time.sleep(iteration_delay)

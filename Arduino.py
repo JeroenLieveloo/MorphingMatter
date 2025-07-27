@@ -5,14 +5,16 @@ class Arduino:
     def __init__(self, actuators, address, bus_num=1):
         self.isConnected = False
         self.actuators = actuators  # List of Actuator objects
-        self.address = address  # I2C address of the Arduino
+        self.address = address
+        if address > 255:
+            print(f"Cannot convert {address} to byte because it is larger than 255.")
 
         try:
-            print("Connecting to Arduino via I2C at address", address, file=sys.stderr)
+            print("Connecting to Arduino via I2C at address", self.address, file=sys.stderr)
             self.init_bus(bus_num)
             if not self.isConnected: return
             print("Connected to Arduino at address", self.address, file=sys.stderr)
-            self.UID = address  # Use address as UID for I2C
+            self.address = address  # Use address as address for I2C
         except Exception as e:
             print(f"Failed to initialize Arduino: {e}", file=sys.stderr)
             self.close()
@@ -20,10 +22,13 @@ class Arduino:
     def get_actuators(self):
         return self.actuators
 
+    def add_actuator(self, actuator):
+        self.actuators.append(actuator)
+
     def get_pins(self):
         pins = []
         for actuator in self.actuators:
-            if actuator.arduino == self.UID:
+            if actuator.arduino == self.address:
                 pins.append(actuator.pin)
         return pins
     
@@ -38,14 +43,14 @@ class Arduino:
         
 
     def write(self, data):
-        #if not connected to i2c, skip sending the data and write it to the console instead
-        if not self.isConnected: 
-            #print(data)
-            return
         """
         Sends an array of (pin, value) pairs to the Arduino over I2C.
         :param data: List of tuples, where each tuple is (pin, value)
         """
+        #if not connected to i2c, skip sending the data and write it to the console instead
+        if not self.isConnected: 
+            #print(data)
+            return
         message = self.serialize_data(data)
         # Convert message to bytes and send over I2C
         try:
@@ -53,7 +58,7 @@ class Arduino:
             for b in message:
                 self.bus.write_byte(self.address, b)
         except Exception as e:
-            print(f"I2C write error: {e}", file=sys.stderr)
+            print(f"Arduino {self.address} I2C write error: {e}", file=sys.stderr)
 
     def serialize_data(self, data):
         """

@@ -42,4 +42,5 @@ class Actuator:
         return {"actuation": clamp(0, 1, self.actuation),
                 'x': self.pos.x, 
                 'y': self.pos.y, 
-                'pin': self.pin}
+                'pin': self.pin,
+                'arduino': self.arduino}
